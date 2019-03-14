@@ -108,7 +108,7 @@ Ini adalah Source code untuk no. 5a:<br>
  }  
 </code></pre>
 
-Saynagnya, program no. 5a ini bertujuan untuk membunuh komputer secara perlahan. Karena itu dibutuhkan jawaban untuk soal no. 5b. Untuk soal no. 5b, kita hanya memakai exec untuk mengkill program yang sudah dibuat 5a.
+Sayangnya, program no. 5a ini bisa membunuh komputer secara perlahan karena programnya infinite dan akan melakukannya terus-menerus sampai memorinya penuh. Karena itu dibutuhkan jawaban untuk soal no. 5b. Untuk soal no. 5b, kita hanya memakai exec untuk mengkill program yang sudah dibuat 5a.
 
 <pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;"> #include &lt;sys/wait.h&gt;  
  #include &lt;sys/types.h&gt;  
