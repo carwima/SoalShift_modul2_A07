@@ -98,7 +98,6 @@ Pada suatu hari Kusuma dicampakkan oleh Elen karena Elen dimenangkan oleh orang 
 Catatan: Tidak boleh menggunakan crontab
 <br>
 ## Ans :
-
 Cara mengerjakan :
 <p>1. Menangkap array informasi tentang file elen.ku dengan stat(path, stat*)
 <p>2. Mengambil informasi nama dan group dari file elen.ku dengan library &lt;pwd.h> dan &lt;grp.h>
@@ -179,7 +178,72 @@ File makan_enak.txt terakhir dibuka pada detik ke-1
 Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt
 
 ## Ans
-
+Untuk program pengecek pembukaan file dan pembuatan makan_sehatx.txt, tidak terdapat masalah. Tetapi pada sistem UNIX/LINUX, access time tidak diupdate secara realtime, melainkan harus dilakukan modify/perubahan pada file, agar ketika dibuka kembali access time berubah.
+<pre>
+Berikut penjelasan kode :
+  1. Program dibuat dalam program daemon agar berlangsung secara terus menerus pada background.
+  2. Stat data makanenak.txt dimasukkan kedalam char info.
+  3. Menggunakan fungsi difftime(timea, timeb) untuk melakukan pengecekan selisih waktu sistem dan waktu program diakses
+  4. Membuat file dengan penamaan directory/makanan/makan_enakx.txt menggunakan fopen("","w") untuk write.
+  5. Melakukan sleep 5s sekali setiap pembuatan file.
+</pre>
+<pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;"> #include &lt;sys/types.h&gt;  
+ #include &lt;sys/stat.h&gt;  
+ #include &lt;stdio.h&gt;  
+ #include &lt;stdlib.h&gt;  
+ #include &lt;fcntl.h&gt;  
+ #include &lt;errno.h&gt;  
+ #include &lt;unistd.h&gt;  
+ #include &lt;syslog.h&gt;  
+ #include &lt;string.h&gt;  
+ #include &lt;time.h&gt;  
+ #include &lt;sys/sysmacros.h&gt;  
+ int main() {  
+  pid_t pid, sid;  
+  pid = fork();  
+  if (pid &lt; 0) {  
+   exit(EXIT_FAILURE);  
+  }  
+  if (pid &gt; 0) {  
+   exit(EXIT_SUCCESS);  
+  }  
+  umask(0);  
+  sid = setsid();  
+  if (sid &lt; 0) {  
+   exit(EXIT_FAILURE);  
+  }  
+  if ((chdir("/")) &lt; 0) {  
+   exit(EXIT_FAILURE);  
+  }  
+  close(STDIN_FILENO);  
+  close(STDOUT_FILENO);  
+  close(STDERR_FILENO);  
+  int ctr=1;  
+  while(1) {  
+   // main program here  
+   char makanEnak[]="/home/carwima/makanan/makanenak.txt";  
+   struct stat info;  
+   stat(makanEnak,&amp;info);  
+   time_t now;  
+   time(&amp;now);  
+   int beda;  
+   beda = difftime(now, info.st_atime);   
+   if(beda&lt;=30){   
+ //   printf("atime : %d ",beda); //debug  
+    char path[150],str[20];  
+    strcpy(path, "/home/carwima/makanan/makan_sehat");  
+    sprintf(str,"%d.txt",ctr);  
+    strcat(path,str);  
+    FILE *baru;  
+    baru = fopen(path,"w");  
+    fclose(baru);  
+    ctr++;  
+    sleep(5);  
+    }  
+  }  
+  exit(EXIT_SUCCESS);  
+ }  
+</code></pre>
 # No 5
 Kerjakan poin a dan b di bawah:
 Buatlah program c untuk mencatat log setiap menit dari file log pada syslog ke /home/[user]/log/[dd:MM:yyyy-hh:mm]/log#.log
