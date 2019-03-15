@@ -99,13 +99,13 @@ Catatan: Tidak boleh menggunakan crontab
 <br>
 ## Ans :
 
-<br>Cara mengerjakan :
-<br/>1. Menangkap array informasi tentang file elen.ku dengan stat(path, stat*)<br/>
-<br/>2. Mengambil informasi nama dan group dari file elen.ku dengan library &lt;pwd.h> dan &lt;grp.h>
-<br/>3. Mengecek apakah nama dan grup dari file merupakan www-data
-<br/>4. Jika step3 benar, maka file akan diganti moderatornya, dengan chmod(namafile,int) dengan int harus bilangan okta, maka di set dengan strtol(0,mode[],8). Pada mode di set [0777] maksud dari 0 di mode[0] adalah char bebas sebelum angka mod file.
-<br/>5. File di remove
-<br/>6. Karena diminta program secara otomatis setiap 3s, maka program diletakan pada program daemon dan ditambahkan sleep(3) atau memberi jeda 3s setiap runnya.
+Cara mengerjakan :
+<p>1. Menangkap array informasi tentang file elen.ku dengan stat(path, stat*)
+<p>2. Mengambil informasi nama dan group dari file elen.ku dengan library &lt;pwd.h> dan &lt;grp.h>
+<p>3. Mengecek apakah nama dan grup dari file merupakan www-data
+<p>4. Jika step3 benar, maka file akan diganti moderatornya, dengan chmod(namafile,int) dengan int harus bilangan okta, maka di set dengan strtol(0,mode[],8). Pada mode di set [0777] maksud dari 0 di mode[0] adalah char bebas sebelum angka mod file.
+<p>5. File di remove
+<p>6. Karena diminta program secara otomatis setiap 3s, maka program diletakan pada program daemon dan ditambahkan sleep(3) atau memberi jeda 3s setiap runnya.
 
 <pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;">#include &lt;sys/types.h>
 #include &lt;sys/stat.h>
