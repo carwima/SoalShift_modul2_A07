@@ -42,7 +42,7 @@ int main() {
   while(1) {
    struct stat info;
    char helen[] = "/home/carwima/hatiku/elen.ku";
-   stat(helen, &info);  // Error check omitted
+   stat(helen, &info);  //get hellen stat to char info
    struct passwd *pw = getpwuid(info.st_uid); //passwd user
    struct group  *gr = getgrgid(info.st_gid); //group
 //   printf("%s", gr->gr_name);  //was for checking group name
