@@ -167,6 +167,7 @@ int main() {
   exit(EXIT_SUCCESS);
 }
 </pre>
+
 # No 3
 Diberikan file campur2.zip. Di dalam file tersebut terdapat folder “campur2”. 
 Buatlah program C yang dapat :
@@ -177,7 +178,16 @@ Gunakan fork dan exec.
 Gunakan minimal 3 proses yang diakhiri dengan exec.
 Gunakan pipe
 Pastikan file daftar.txt dapat diakses dari text editor
+
 ## Ans
+Untuk No. 3 kita memakai two pipe untuk membuat programnya. Kita membuat 3 child dimana tiap child dan parent memiliki sistem fork. jika child1<0, maka program akan exit. lalu, jika child1 ==0 maka unzip campur2.zip. Jika child1>0 maka akan melakukan grep dan diprint di daftar.txt.
+
+Soal ini belum diselesaikan.
+
+### Masalah yang menyebabkan tidak bsia diselesaikan
+<p>Tidak bisa unzip.
+<p>Tidak bisa membaca ls dan grep sehingga tidak bisa print di daftar.txt.
+
 # No 4
 Dalam direktori /home/[user]/Documents/makanan terdapat file makan_enak.txt yang berisikan daftar makanan terkenal di Surabaya. Elen sedang melakukan diet dan seringkali tergiur untuk membaca isi makan_enak.txt karena ngidam makanan enak. Sebagai teman yang baik, Anda membantu Elen dengan membuat program C yang berjalan setiap 5 detik untuk memeriksa apakah file makan_enak.txt pernah dibuka setidaknya 30 detik yang lalu (rentang 0 - 30 detik).
 Jika file itu pernah dibuka, program Anda akan membuat 1 file makan_sehat#.txt di direktori /home/[user]/Documents/makanan dengan '#' berisi bilangan bulat dari 1 sampai tak hingga untuk mengingatkan Elen agar berdiet.
