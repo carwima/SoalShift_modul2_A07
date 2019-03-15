@@ -1,8 +1,171 @@
 # SoalShift_modul2_A07
 # No 1
-  
+Elen mempunyai pekerjaan pada studio sebagai fotografer. Suatu hari ada seorang klien yang bernama Kusuma yang meminta untuk mengubah nama file yang memiliki ekstensi .png menjadi “[namafile]_grey.png”. Karena jumlah file yang diberikan Kusuma tidak manusiawi, maka Elen meminta bantuan kalian untuk membuat suatu program C yang dapat mengubah nama secara otomatis dan diletakkan pada direktori /home/[user]/modul2/gambar.
+Catatan : Tidak boleh menggunakan crontab.
+
+## Ans :
+Untuk mengerjakan soal ini, digunakan library c &lt;dirent.h>, hal ini bertujuan untuk mendapatkan nama-nama file pada sebuah directory. Kemudian nama file tersebut akan dicheck dengan strstr(filename, ".png") hal ini bertujuan untuk mencari nama file dengan ekstensi ".png", jika file tersebut ditemukan makan dipastikan kembali apakah file sudah berformat "xxx_grey.png", jika belum maka akan dilakukan penamaan file. 
+<br/>
+Proses penamaan file : 
+<br/>1. Memotong nama file sampai ".png"
+<br/>2. Menambahkan nama file dengan "_grey.png" dengan strcat(dest,src)
+<br/>3. Mengganti nama file dengan function rename(src, dest)
+<br>
+Karena program akan dijalankan secara otomatis, maka program dimasukkan kedalam program daemon, sehingga program akan berjalan secara terus menerus. Sampai setidaknya proses di kill.
+<pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;">#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;syslog.h&gt;
+#include &lt;string.h&gt;
+#include &lt;dirent.h&gt;
+int main() {
+  pid_t pid, sid;
+
+  pid = fork();
+
+  if (pid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  sid = setsid();
+
+  if (sid &lt; 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if ((chdir("/")) &lt; 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+
+  while(1) {
+    // main program here
+  char *ptrToSubString, *ptrToSubString2;
+      char fileName[100], newFile[100], path_awal[150], path_akhir[150] ;
+      strcpy(path_awal, "/home/carwima/modul2/gambar/");
+      strcpy(path_akhir, "/home/carwima/modul2/gambar/");
+      DIR *dir;
+      struct dirent *ent;
+      dir = opendir("/home/carwima/modul2/gambar");
+ //     if (dir != NULL) {
+              while((ent = readdir(dir)) != NULL) {
+                     strcpy(fileName,ent-&gt;d_name);
+                     ptrToSubString = strstr(fileName,".png");
+                     if (ptrToSubString != NULL) {
+                         printf("%s",ent-&gt;d_name);
+                         ptrToSubString2 = strstr(fileName, "_grey.png");
+                         if(ptrToSubString2 != NULL)
+                             continue;
+                         else{      
+                             strtok(fileName,".png");
+                             strcpy(newFile,fileName);
+                             strcat(newFile,"_grey.png");
+                             strcat(fileName,".png");
+                             strcat(path_awal,fileName);
+                             strcat(path_akhir,newFile);
+                             rename(path_awal,path_akhir);
+                          }
+                    } else {
+                        continue;
+                    }
+              }
+              closedir(dir);
+/*      } else {
+              perror("");
+              return 5;
+   }
+    sleep(30);
+*/  }
+  exit(EXIT_SUCCESS);
+}
+
+</pre>
 # No 2
-  
+Pada suatu hari Kusuma dicampakkan oleh Elen karena Elen dimenangkan oleh orang lain. Semua kenangan tentang Elen berada pada file bernama “elen.ku” pada direktori “hatiku”. Karena sedih berkepanjangan, tugas kalian sebagai teman Kusuma adalah membantunya untuk menghapus semua kenangan tentang Elen dengan membuat program C yang bisa mendeteksi owner dan group dan menghapus file “elen.ku” setiap 3 detik dengan syarat ketika owner dan grupnya menjadi “www-data”. Ternyata kamu memiliki kendala karena permission pada file “elen.ku”. Jadi, ubahlah permissionnya menjadi 777. Setelah kenangan tentang Elen terhapus, maka Kusuma bisa move on.
+Catatan: Tidak boleh menggunakan crontab
+<br>
+## Ans :
+Cara mengerjakan :
+<br/>1. Menangkap array informasi tentang file elen.ku dengan stat(path, stat*)
+<br/>2. Mengambil informasi nama dan group dari file elen.ku dengan library &lt;pwd.h> dan &lt;grp.h>
+<br/>3. Mengecek apakah nama dan grup dari file merupakan www-data
+<br/>4. Jika step3 benar, maka file akan diganti moderatornya, dengan chmod(namafile,int) dengan int harus bilangan okta, maka di set dengan strtol(0,mode[],8). Pada mode di set [0777] maksud dari 0 di mode[0] adalah char bebas sebelum angka mod file.
+<br/>5. File di remove
+<br/>6. Karena diminta program secara otomatis setiap 3s, maka program diletakan pada program daemon dan ditambahkan sleep(3) atau memberi jeda 3s setiap runnya.
+<pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;">#include &lt;sys/types.h>
+#include &lt;sys/stat.h>
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;fcntl.h>
+#include &lt;errno.h>
+#include &lt;unistd.h>
+#include &lt;syslog.h>
+#include &lt;string.h>
+#include &lt;pwd.h> //passwd / user
+#include &lt;grp.h> //group
+
+int main() {
+  pid_t pid, sid;
+
+  pid = fork();
+
+  if (pid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  sid = setsid();
+
+  if (sid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if ((chdir("/")) < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+
+  while(1) {
+   struct stat info;
+   char helen[] = "/home/carwima/hatiku/elen.ku";
+   stat(helen, &info);  //get hellen stat to char info
+   struct passwd *pw = getpwuid(info.st_uid); //passwd user
+   struct group  *gr = getgrgid(info.st_gid); //group
+//   printf("%s", gr->gr_name);  //was for checking group name
+   if(strcmp(gr->gr_name,"www-data")==0 && strcmp(pw->pw_name, "www-data")==0){ //membandingkan string group
+//        printf("true, bye-bye file!/n");
+        char mode[] = "0777"; 
+        int i;
+        i = strtol(mode, 0, 8); //
+        chmod(helen, i);
+        remove("/home/carwima/hatiku/elen.ku");
+    }
+    sleep(3);
+  }
+  exit(EXIT_SUCCESS);
+}
+</pre>
 # No 3
   
 # No 4
