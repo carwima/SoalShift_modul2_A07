@@ -46,10 +46,7 @@ int main() {
    time_t now;
    time(&now);
    int beda;
-/*   FILE *fi;
-   fi=fopen(makanEnak,"w");
-   fclose(fi);
-*/   beda = difftime(now, info.st_atime); 
+   beda = difftime(now, info.st_atime); 
    if(beda<=30){ 
      printf("atime :  %d  ",beda); //debug
      char path[150],str[20];
@@ -62,7 +59,6 @@ int main() {
      ctr++;
      sleep(5);
      }
-//     sleep(1);
   }
   exit(EXIT_SUCCESS);
 }
