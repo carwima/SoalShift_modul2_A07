@@ -48,7 +48,7 @@ int main() {
    int beda;
    beda = difftime(now, info.st_atime); 
    if(beda<=30){ 
-     printf("atime :  %d  ",beda); //debug
+//     printf("atime :  %d  ",beda); //debug
      char path[150],str[20];
      strcpy(path, "/home/carwima/makanan/makan_sehat");
      sprintf(str,"%d.txt",ctr);
