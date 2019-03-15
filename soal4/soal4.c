@@ -46,18 +46,19 @@ int main() {
    time_t now;
    time(&now);
    int beda;
-//   FILE *fi;
-//   fi=fopen(makanEnak,"w");
-//   fclose(fi);
-   beda = difftime(now, info.st_atime); 
+/*   FILE *fi;
+   fi=fopen(makanEnak,"w");
+   fclose(fi);
+*/   beda = difftime(now, info.st_atime); 
    if(beda<=30){ 
      printf("atime :  %d  ",beda); //debug
      char path[150],str[20];
      strcpy(path, "/home/carwima/makanan/makan_sehat");
      sprintf(str,"%d.txt",ctr);
      strcat(path,str);
-     char *argv[] = {"touch", path, NULL};
-     execv("/usr/bin/touch", argv);
+     FILE *baru;
+     baru = fopen(path,"w");
+     fclose(baru);
      ctr++;
      sleep(5);
      }
