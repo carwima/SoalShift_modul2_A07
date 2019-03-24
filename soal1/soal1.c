@@ -50,7 +50,7 @@ int main() {
               while((ent = readdir(dir)) != NULL) {
                      strcpy(fileName,ent->d_name);
                      ptrToSubString = strstr(fileName,".png");
-                     if (ptrToSubString != NULL) {
+                     if (ptrToSubString != NULL && ent->d_type==DT_REG) {
                          printf("%s",ent->d_name);
                          ptrToSubString2 = strstr(fileName, "_grey.png");
                          if(ptrToSubString2 != NULL)
