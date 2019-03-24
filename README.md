@@ -4,12 +4,13 @@ Elen mempunyai pekerjaan pada studio sebagai fotografer. Suatu hari ada seorang 
 Catatan : Tidak boleh menggunakan crontab.
 
 ## Ans :
-Untuk mengerjakan soal ini, digunakan library c &lt;dirent.h>, hal ini bertujuan untuk mendapatkan nama-nama file pada sebuah directory. Kemudian nama file tersebut akan dicheck dengan strstr(filename, ".png") hal ini bertujuan untuk mencari nama file dengan ekstensi ".png", jika file tersebut ditemukan makan dipastikan kembali apakah file sudah berformat "xxx_grey.png", jika belum maka akan dilakukan penamaan file. 
+Untuk mengerjakan soal ini, digunakan library c &lt;dirent.h>, hal ini bertujuan untuk mendapatkan nama-nama file pada sebuah directory. Setelah nama file di catch, makan filetype akan dicek. Kemudian nama file tersebut akan dicheck dengan strstr(filename, ".png") hal ini bertujuan untuk mencari nama file dengan ekstensi ".png", jika file tersebut ditemukan makan dipastikan kembali apakah file sudah berformat "xxx_grey.png", jika belum maka akan dilakukan penamaan file. 
 <br/>
 Proses penamaan file : 
 <br/>1. Memotong nama file sampai ".png"
 <br/>2. Menambahkan nama file dengan "_grey.png" dengan strcat(dest,src)
 <br/>3. Mengganti nama file dengan function rename(src, dest)
+
 <br>
 Karena program akan dijalankan secara otomatis, maka program dimasukkan kedalam program daemon, sehingga program akan berjalan secara terus menerus. Sampai setidaknya proses di kill.
 <pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;">#include &lt;sys/types.h&gt;
@@ -64,7 +65,7 @@ int main() {
               while((ent = readdir(dir)) != NULL) {
                      strcpy(fileName,ent-&gt;d_name);
                      ptrToSubString = strstr(fileName,".png");
-                     if (ptrToSubString != NULL) {
+                     if (ptrToSubString != NULL && ent->d_type==DT_REG) {
                          printf("%s",ent-&gt;d_name);
                          ptrToSubString2 = strstr(fileName, "_grey.png");
                          if(ptrToSubString2 != NULL)
@@ -180,13 +181,50 @@ Gunakan pipe
 Pastikan file daftar.txt dapat diakses dari text editor
 
 ## Ans
-Untuk No. 3 kita memakai two pipe untuk membuat programnya. Kita membuat 3 child dimana tiap child dan parent memiliki sistem fork. jika child1<0, maka program akan exit. lalu, jika child1 ==0 maka unzip campur2.zip. Jika child1>0 maka akan melakukan grep dan diprint di daftar.txt.
+<pre>
+  1. Melakukan 2 fork untuk membuat 3 proses.
+  2. Masing-masing proses akan dilakukan secara berurutan : Unzip, Ls, Grep
+  3. Pada proses ke-2(ls) diberikan pipe yang menyimpan output dari ls
+  4. Pada proses ke-3(grep) menyeleksi output dari ls.
+  5. Menyimpan output dari grep dengan freopen untuk memasukkan output dari grep ke file bernama daftar.txt.
+</pre>
+kode :
+<pre  style="font-family:arial;font-size:12px;border:1px dashed #CCCCCC;width:99%;height:auto;overflow:auto;background:#f0f0f0;;background-image:URL(http://2.bp.blogspot.com/_z5ltvMQPaa8/SjJXr_U2YBI/AAAAAAAAAAM/46OqEP32CJ8/s320/codebg.gif);padding:0px;color:#000000;text-align:left;line-height:20px;"><code style="color:#000000;word-wrap:normal;"> #include &lt;stdlib.h&gt;  
+ #include &lt;sys/types.h&gt;  
+ #include &lt;unistd.h&gt;  
+ #include &lt;dirent.h&gt;  
+ #include &lt;stdio.h&gt;  
+ #include &lt;string.h&gt;  
+ #include &lt;sys/wait.h&gt;  
+ int main(){  
+   pid_t cid, cid1, cid2;  
+   int line[2],tes[2], status2, status3;  
+   pipe(line);  
+      if((cid1=fork())==0){  
+             char *zip[] = {"unzip", "campur2.zip", NULL};  
+           execvp(zip[0], zip);  
+      }  
+      else{  
+           while ((wait(&amp;status2)) &gt; 0);  
+           if((cid2=fork())==0){  
+                dup2(line[1],1);  
+                close(line[0]);  
+             close(line[1]);  
+                char *list[] = {"ls","/home/carwima/SoalShift_modul2_A07/soal3/campur2/", NULL};  
+               execvp(list[0], list);  
+           }  
+           else{  
+                while((wait(&amp;status3))&gt;0);  
+                dup2(line[0],0);  
+                freopen ("daftar.txt","w",stdout);  
+                close(line[1]);  
+                char *grab[] = {"grep", ".txt$", NULL};  
+                execvp(grab[0], grab);  
+           }  
+     }  
+ }  
+</code></pre>
 
-Soal ini belum diselesaikan.
-
-### Masalah yang menyebabkan tidak bsia diselesaikan
-<p>Tidak bisa unzip.
-<p>Tidak bisa membaca ls dan grep sehingga tidak bisa print di daftar.txt.
 
 # No 4
 Dalam direktori /home/[user]/Documents/makanan terdapat file makan_enak.txt yang berisikan daftar makanan terkenal di Surabaya. Elen sedang melakukan diet dan seringkali tergiur untuk membaca isi makan_enak.txt karena ngidam makanan enak. Sebagai teman yang baik, Anda membantu Elen dengan membuat program C yang berjalan setiap 5 detik untuk memeriksa apakah file makan_enak.txt pernah dibuka setidaknya 30 detik yang lalu (rentang 0 - 30 detik).
