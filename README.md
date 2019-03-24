@@ -4,7 +4,7 @@ Elen mempunyai pekerjaan pada studio sebagai fotografer. Suatu hari ada seorang 
 Catatan : Tidak boleh menggunakan crontab.
 
 ## Ans :
-Untuk mengerjakan soal ini, digunakan library c &lt;dirent.h>, hal ini bertujuan untuk mendapatkan nama-nama file pada sebuah directory. Setelah nama file di catch, makan filetype akan dicek. Kemudian nama file tersebut akan dicheck dengan strstr(filename, ".png") hal ini bertujuan untuk mencari nama file dengan ekstensi ".png", jika file tersebut ditemukan makan dipastikan kembali apakah file sudah berformat "xxx_grey.png", jika belum maka akan dilakukan penamaan file. 
+Untuk mengerjakan soal ini, digunakan library c &lt;dirent.h&gt;, hal ini bertujuan untuk mendapatkan nama-nama file pada sebuah directory. Setelah nama file di catch, makan filetype akan dicek. Kemudian nama file tersebut akan dicheck dengan strstr(filename, ".png") hal ini bertujuan untuk mencari nama file dengan ekstensi ".png", jika file tersebut ditemukan makan dipastikan kembali apakah file sudah berformat "xxx_grey.png", jika belum maka akan dilakukan penamaan file. 
 <br/>
 Proses penamaan file : 
 <br/>1. Memotong nama file sampai ".png"
@@ -94,9 +94,7 @@ int main() {
 }
 
 </pre>
-<br/>
-<pre>
-</pre>
+
 # No 2 
 Pada suatu hari Kusuma dicampakkan oleh Elen karena Elen dimenangkan oleh orang lain. Semua kenangan tentang Elen berada pada file bernama “elen.ku” pada direktori “hatiku”. Karena sedih berkepanjangan, tugas kalian sebagai teman Kusuma adalah membantunya untuk menghapus semua kenangan tentang Elen dengan membuat program C yang bisa mendeteksi owner dan group dan menghapus file “elen.ku” setiap 3 detik dengan syarat ketika owner dan grupnya menjadi “www-data”. Ternyata kamu memiliki kendala karena permission pada file “elen.ku”. Jadi, ubahlah permissionnya menjadi 777. Setelah kenangan tentang Elen terhapus, maka Kusuma bisa move on.
 Catatan: Tidak boleh menggunakan crontab
